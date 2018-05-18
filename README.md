@@ -4,9 +4,9 @@ Standard ES Logging Library
 
 ## Usage
 
-1. Install the library directly from pip
+1. Install the library by placing the following requirement in your requirements.txt
 ```
-pip install eslog
+git+https://github.com/epidemicsound/pyeslog.git#egg=pyeslog
 ```
 
 2. Import the Logger in the module
