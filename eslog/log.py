@@ -81,5 +81,8 @@ class Logger():
     def warn(self, msg, **kwargs):
         self._logger.warn(msg, **dict(kwargs))
 
+    def warning(self, msg, **kwargs):
+        self._logger.warning(msg, **dict(kwargs))
+
     def error(self, msg, **kwargs):
         self._logger.error(msg, **dict(kwargs))
