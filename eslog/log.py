@@ -1,25 +1,30 @@
 import collections
 import os
 from datetime import datetime
-
-from structlog import (
-        PrintLogger,
-        wrap_logger,
-)
+import logging
+from structlog import wrap_logger
 from structlog.processors import (
         JSONRenderer,
 )
 
 
-def order_fields(_, level, event_dict):
+def order_fields(_logger, _method_name, event_dict):
 
     response = collections.OrderedDict()
-    response['level'] = level
     response['message'] = event_dict.pop('message')
-    response['timestamp'] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
     response.update(sorted(event_dict.items()))
     return response
+
+
+def add_timestamp(_logger, _method_name, event_dict):
+    event_dict['timestamp'] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    return event_dict
+
+
+def add_level(_, method_name, event_dict):
+    event_dict['level'] = method_name
+    return event_dict
 
 
 class Logger():
@@ -27,8 +32,10 @@ class Logger():
     def __init__(self, output=None, service=None, namespace=None):
 
         log = wrap_logger(
-                PrintLogger(output),
+                logging.getLogger(__name__),
                 processors=[
+                    add_level,
+                    add_timestamp,
                     order_fields,
                     JSONRenderer(),
                 ])
